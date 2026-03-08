@@ -107,6 +107,7 @@ class _BreedsScreenState extends State<BreedsScreen> {
           trailing: const Icon(Icons.chevron_right),
           onTap: () async {
             await AnalyticsService.logBreedOpened(breed.name);
+            if (!context.mounted) return;
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => BreedDetailScreen(breed: breed),
