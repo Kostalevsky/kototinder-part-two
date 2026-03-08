@@ -30,9 +30,7 @@ class AnalyticsService {
   static Future<void> logBreedOpened(String breedName) async {
     await _analytics.logEvent(
       name: 'breed_opened',
-      parameters: {
-        'breed_name': breedName,
-      },
+      parameters: {'breed_name': breedName},
     );
   }
 }

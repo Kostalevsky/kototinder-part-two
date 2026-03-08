@@ -47,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!mounted) return;
 
     await AnalyticsService.logRegisterSuccess();
-    
+
     setState(() {
       isLoading = false;
     });

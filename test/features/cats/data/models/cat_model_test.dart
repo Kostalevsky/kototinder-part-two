@@ -13,7 +13,7 @@ void main() {
             'origin': 'USA',
             'life_span': '12 - 15',
             'temperament': 'Alert, Agile, Energetic',
-          }
+          },
         ],
       };
 
@@ -44,9 +44,7 @@ void main() {
     test('подставляет пустую строку, если url отсутствует', () {
       final json = {
         'breeds': [
-          {
-            'name': 'Siamese',
-          }
+          {'name': 'Siamese'},
         ],
       };
 

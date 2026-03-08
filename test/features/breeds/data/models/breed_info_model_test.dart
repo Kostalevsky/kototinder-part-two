@@ -24,9 +24,7 @@ void main() {
     });
 
     test('подставляет значение по умолчанию, если name отсутствует', () {
-      final json = {
-        'description': 'Безымянная порода',
-      };
+      final json = {'description': 'Безымянная порода'};
 
       final model = BreedInfoModel.fromJson(json);
 
