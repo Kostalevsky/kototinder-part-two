@@ -3,8 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kototinder/features/auth/presentation/screens/login_screen.dart';
 
 void main() {
-  testWidgets('Экран авторизации показывает поля и ошибку при пустом вводе',
-      (WidgetTester tester) async {
+  testWidgets('Экран авторизации показывает поля и ошибку при пустом вводе', (
+    WidgetTester tester,
+  ) async {
     var loginSuccess = false;
     var openRegister = false;
 
@@ -35,8 +36,9 @@ void main() {
     expect(openRegister, false);
   });
 
-  testWidgets('Экран авторизации открывает регистрацию',
-      (WidgetTester tester) async {
+  testWidgets('Экран авторизации открывает регистрацию', (
+    WidgetTester tester,
+  ) async {
     var openRegister = false;
 
     await tester.pumpWidget(
