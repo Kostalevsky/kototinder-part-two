@@ -1,26 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'cat_details_screen.dart';
-
-const String apiKey =
-    'live_snKNzTQHrC3HvQ1SKQhDwTp2cCOPVVBoM6VDbDfmcjl2W6qmYRmcPJGJFRu80TJX';
-
-class Breed {
-  final String name;
-  final String? description;
-  final String? origin;
-  final String? lifeSpan;
-  final String? temperament;
-
-  Breed({
-    required this.name,
-    this.description,
-    this.origin,
-    this.lifeSpan,
-    this.temperament,
-  });
-}
+import 'package:kototinder/features/cats/data/datasources/cat_remote_data_source.dart';
+import 'package:kototinder/features/cats/domain/entities/cat_entity.dart';
+import 'package:kototinder/features/cats/presentation/screens/cat_details_screen.dart';
 
 class CatScreen extends StatefulWidget {
   const CatScreen({super.key});
@@ -30,55 +11,43 @@ class CatScreen extends StatefulWidget {
 }
 
 class _CatScreenState extends State<CatScreen> {
-  String? imageUrl;
-  Breed? currentBreed;
-  int likeCount = 0;
+  final _catRemoteDataSource = CatRemoteDataSource();
 
-  Future<void> loadCat() async {
+  CatEntity? _currentCat;
+  int _likeCount = 0;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCat();
+  }
+
+  Future<void> _loadCat() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
-      final url = Uri.parse(
-        'https://api.thecatapi.com/v1/images/search?has_breeds=1',
-      );
-      final response = await http.get(url, headers: {'x-api-key': apiKey});
+      final cat = await _catRemoteDataSource.fetchRandomCat();
 
-      if (response.statusCode != 200) {
-        throw Exception('Ошибка: ${response.statusCode}');
-      }
-
-      final data = json.decode(response.body);
-
-      if (data is! List || data.isEmpty) {
-        throw Exception('Пустой ответ от API');
-      }
-
-      final cat = data[0] as Map<String, dynamic>;
-      final List<dynamic> breedsList =
-          (cat['breeds'] as List<dynamic>?) ?? <dynamic>[];
-
-      Breed breed;
-
-      if (breedsList.isNotEmpty) {
-        final b = breedsList[0] as Map<String, dynamic>;
-
-        breed = Breed(
-          name: (b['name'] as String?) ?? 'Неизвестная порода',
-          description: b['description'] as String?,
-          origin: b['origin'] as String?,
-          lifeSpan: b['life_span'] as String?,
-          temperament: b['temperament'] as String?,
-        );
-      } else {
-        breed = Breed(name: 'Неизвестная порода');
-      }
+      if (!mounted) return;
 
       setState(() {
-        imageUrl = cat['url'] as String?;
-        currentBreed = breed;
+        _currentCat = cat;
+        _isLoading = false;
       });
     } catch (e) {
       if (!mounted) return;
 
-      showDialog(
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+
+      showDialog<void>(
         context: context,
         builder: (_) => AlertDialog(
           title: const Text('Ошибка'),
@@ -94,17 +63,42 @@ class _CatScreenState extends State<CatScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    loadCat();
+  void _likeCat() {
+    setState(() {
+      _likeCount++;
+    });
+    _loadCat();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl == null) {
+    if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    if (_errorMessage != null || _currentCat == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _errorMessage ?? 'Не удалось загрузить котика',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadCat,
+                child: const Text('Попробовать снова'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final cat = _currentCat!;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -120,7 +114,7 @@ class _CatScreenState extends State<CatScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  currentBreed?.name ?? 'Неизвестная порода',
+                  cat.breed.name,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -130,15 +124,11 @@ class _CatScreenState extends State<CatScreen> {
                 const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () {
-                    if (imageUrl == null || currentBreed == null) {
-                      return;
-                    }
-
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => CatDetailScreen(
-                          imageUrl: imageUrl!,
-                          breed: currentBreed!,
+                          imageUrl: cat.imageUrl,
+                          breed: cat.breed,
                         ),
                       ),
                     );
@@ -148,25 +138,25 @@ class _CatScreenState extends State<CatScreen> {
                     if (velocity == null) return;
 
                     if (velocity > 0) {
-                      setState(() {
-                        likeCount++;
-                      });
-                      loadCat();
+                      _likeCat();
                     } else if (velocity < 0) {
-                      loadCat();
+                      _loadCat();
                     }
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: AspectRatio(
                       aspectRatio: 4 / 3,
-                      child: Image.network(imageUrl!, fit: BoxFit.cover),
+                      child: Image.network(
+                        cat.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Лайков: $likeCount',
+                  'Лайков: $_likeCount',
                   style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 8),
@@ -175,17 +165,12 @@ class _CatScreenState extends State<CatScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.thumb_down, size: 32),
-                      onPressed: loadCat,
+                      onPressed: _loadCat,
                     ),
                     const SizedBox(width: 40),
                     IconButton(
                       icon: const Icon(Icons.thumb_up, size: 32),
-                      onPressed: () {
-                        setState(() {
-                          likeCount++;
-                        });
-                        loadCat();
-                      },
+                      onPressed: _likeCat,
                     ),
                   ],
                 ),

@@ -1,27 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-const String apiKey =
-    'live_snKNzTQHrC3HvQ1SKQhDwTp2cCOPVVBoM6VDbDfmcjl2W6qmYRmcPJGJFRu80TJX';
-
-class BreedInfo {
-  final String name;
-  final String? description;
-  final String? origin;
-  final String? lifeSpan;
-  final String? temperament;
-  final int? intelligence;
-
-  BreedInfo({
-    required this.name,
-    this.description,
-    this.origin,
-    this.lifeSpan,
-    this.temperament,
-    this.intelligence,
-  });
-}
+import 'package:kototinder/features/breeds/data/datasources/breeds_remote_data_source.dart';
+import 'package:kototinder/features/breeds/domain/entities/breed_info_entity.dart';
 
 class BreedsScreen extends StatefulWidget {
   const BreedsScreen({super.key});
@@ -31,61 +10,42 @@ class BreedsScreen extends StatefulWidget {
 }
 
 class _BreedsScreenState extends State<BreedsScreen> {
-  List<BreedInfo> breeds = [];
-  bool isLoading = true;
-  String? errorMessage;
+  final _breedsRemoteDataSource = BreedsRemoteDataSource();
+
+  List<BreedInfoEntity> _breeds = [];
+  bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    loadBreeds();
+    _loadBreeds();
   }
 
-  Future<void> loadBreeds() async {
+  Future<void> _loadBreeds() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
-      final url = Uri.parse('https://api.thecatapi.com/v1/breeds');
-      final response = await http.get(url, headers: {'x-api-key': apiKey});
+      final breeds = await _breedsRemoteDataSource.fetchBreeds();
 
-      if (response.statusCode != 200) {
-        throw Exception('Ошибка: ${response.statusCode}');
-      }
-
-      final data = json.decode(response.body);
-
-      if (data is! List) {
-        throw Exception('Неожиданный формат ответа');
-      }
-
-      final List<BreedInfo> loadedBreeds = [];
-
-      for (final item in data) {
-        final map = item as Map<String, dynamic>;
-
-        loadedBreeds.add(
-          BreedInfo(
-            name: map['name'] as String? ?? 'Без названия',
-            description: map['description'] as String?,
-            origin: map['origin'] as String?,
-            lifeSpan: map['life_span'] as String?,
-            temperament: map['temperament'] as String?,
-            intelligence: map['intelligence'] as int?,
-          ),
-        );
-      }
+      if (!mounted) return;
 
       setState(() {
-        breeds = loadedBreeds;
-        isLoading = false;
-        errorMessage = null;
+        _breeds = breeds;
+        _isLoading = false;
       });
     } catch (e) {
       if (!mounted) return;
+
       setState(() {
-        isLoading = false;
-        errorMessage = e.toString();
+        _errorMessage = e.toString();
+        _isLoading = false;
       });
 
-      showDialog(
+      showDialog<void>(
         context: context,
         builder: (_) => AlertDialog(
           title: const Text('Ошибка'),
@@ -103,18 +63,36 @@ class _BreedsScreenState extends State<BreedsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (errorMessage != null) {
-      return Center(child: Text('Ошибка: $errorMessage'));
+    if (_errorMessage != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadBreeds,
+                child: const Text('Попробовать снова'),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return ListView.builder(
-      itemCount: breeds.length,
+      itemCount: _breeds.length,
       itemBuilder: (context, index) {
-        final breed = breeds[index];
+        final breed = _breeds[index];
 
         return ListTile(
           title: Text(breed.name),
@@ -143,14 +121,19 @@ class _BreedsScreenState extends State<BreedsScreen> {
 }
 
 class BreedDetailScreen extends StatelessWidget {
-  final BreedInfo breed;
+  final BreedInfoEntity breed;
 
-  const BreedDetailScreen({super.key, required this.breed});
+  const BreedDetailScreen({
+    super.key,
+    required this.breed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(breed.name)),
+      appBar: AppBar(
+        title: Text(breed.name),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -159,7 +142,10 @@ class BreedDetailScreen extends StatelessWidget {
             if (breed.description != null && breed.description!.isNotEmpty) ...[
               const Text(
                 'Описание',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 8),
               Text(breed.description!),
@@ -167,17 +153,20 @@ class BreedDetailScreen extends StatelessWidget {
             ],
             const Text(
               'Характеристики',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             if (breed.origin != null && breed.origin!.isNotEmpty)
-              Text('- Страна происхождения: ${breed.origin}'),
+              Text('Страна происхождения: ${breed.origin}'),
             if (breed.lifeSpan != null && breed.lifeSpan!.isNotEmpty)
-              Text('- Продолжительность жизни: ${breed.lifeSpan} лет'),
+              Text('Продолжительность жизни: ${breed.lifeSpan} лет'),
             if (breed.temperament != null && breed.temperament!.isNotEmpty)
-              Text('- Темперамент: ${breed.temperament}'),
+              Text('Темперамент: ${breed.temperament}'),
             if (breed.intelligence != null)
-              Text('- Интеллект: ${breed.intelligence} из 5'),
+              Text('Интеллект: ${breed.intelligence} из 5'),
           ],
         ),
       ),
