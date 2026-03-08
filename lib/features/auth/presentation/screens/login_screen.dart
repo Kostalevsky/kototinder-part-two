@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kototinder/features/auth/data/auth_local_data_source.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
@@ -48,8 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (success) {
+      await AnalyticsService.logLoginSuccess();
       widget.onLoginSuccess();
     } else {
+      await AnalyticsService.logLoginFailed();
       setState(() {
         errorText = 'Неверный логин или пароль';
       });

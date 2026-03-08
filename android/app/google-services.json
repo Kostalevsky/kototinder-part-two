@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "195906123418",
+    "project_id": "kostalevsky-kototinder",
+    "storage_bucket": "kostalevsky-kototinder.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195906123418:android:1e03a1296a4f56b5cd9123",
+        "android_client_info": {
+          "package_name": "com.example.kototinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2w60o-DEhLMx2qibvFm7ROmwiFESyB3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

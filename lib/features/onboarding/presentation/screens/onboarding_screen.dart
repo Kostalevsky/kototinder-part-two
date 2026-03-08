@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kototinder/features/onboarding/data/onboarding_local_data_source.dart';
 import 'package:kototinder/features/onboarding/domain/entities/onboarding_page_entity.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onCompleted;
@@ -42,6 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _finishOnboarding() async {
     await _onboardingLocalDataSource.setCompleted();
+    await AnalyticsService.logOnboardingCompleted();
     widget.onCompleted();
   }
 

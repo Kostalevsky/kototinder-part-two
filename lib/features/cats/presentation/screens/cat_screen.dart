@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 import 'package:kototinder/features/cats/data/datasources/cat_remote_data_source.dart';
 import 'package:kototinder/features/cats/domain/entities/cat_entity.dart';
 import 'package:kototinder/features/cats/presentation/screens/cat_details_screen.dart';
@@ -63,11 +64,13 @@ class _CatScreenState extends State<CatScreen> {
     }
   }
 
-  void _likeCat() {
+  Future<void> _likeCat() async {
     setState(() {
       _likeCount++;
     });
-    _loadCat();
+
+    await AnalyticsService.logCatLiked();
+    await _loadCat();
   }
 
   @override
@@ -89,7 +92,9 @@ class _CatScreenState extends State<CatScreen> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _loadCat,
+                onPressed: () async {
+                  await _loadCat();
+                },
                 child: const Text('Попробовать снова'),
               ),
             ],
@@ -133,21 +138,24 @@ class _CatScreenState extends State<CatScreen> {
                       ),
                     );
                   },
-                  onHorizontalDragEnd: (details) {
+                  onHorizontalDragEnd: (details) async {
                     final velocity = details.primaryVelocity;
                     if (velocity == null) return;
 
                     if (velocity > 0) {
-                      _likeCat();
+                      await _likeCat();
                     } else if (velocity < 0) {
-                      _loadCat();
+                      await _loadCat();
                     }
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: AspectRatio(
                       aspectRatio: 4 / 3,
-                      child: Image.network(cat.imageUrl, fit: BoxFit.cover),
+                      child: Image.network(
+                        cat.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -162,12 +170,16 @@ class _CatScreenState extends State<CatScreen> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.thumb_down, size: 32),
-                      onPressed: _loadCat,
+                      onPressed: () async {
+                        await _loadCat();
+                      },
                     ),
                     const SizedBox(width: 40),
                     IconButton(
                       icon: const Icon(Icons.thumb_up, size: 32),
-                      onPressed: _likeCat,
+                      onPressed: () async {
+                        await _likeCat();
+                      },
                     ),
                   ],
                 ),

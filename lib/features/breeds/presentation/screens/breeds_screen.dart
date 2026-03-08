@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kototinder/features/breeds/data/datasources/breeds_remote_data_source.dart';
 import 'package:kototinder/features/breeds/domain/entities/breed_info_entity.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 
 class BreedsScreen extends StatefulWidget {
   const BreedsScreen({super.key});
@@ -104,7 +105,8 @@ class _BreedsScreenState extends State<BreedsScreen> {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () {
+          onTap: () async {
+            await AnalyticsService.logBreedOpened(breed.name);
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => BreedDetailScreen(breed: breed),

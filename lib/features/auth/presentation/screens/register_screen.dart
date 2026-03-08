@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kototinder/features/auth/data/auth_local_data_source.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   final VoidCallback onRegisterSuccess;
@@ -45,6 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (!mounted) return;
 
+    await AnalyticsService.logRegisterSuccess();
+    
     setState(() {
       isLoading = false;
     });

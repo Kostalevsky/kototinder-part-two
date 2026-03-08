@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kototinder/features/auth/data/auth_local_data_source.dart';
 import 'package:kototinder/features/breeds/presentation/screens/breeds_screen.dart';
 import 'package:kototinder/features/cats/presentation/screens/cat_screen.dart';
+import 'package:kototinder/core/services/analytics_service.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final VoidCallback? onLogout;
@@ -21,7 +22,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   Future<void> _logout() async {
     await _authLocalDataSource.logout();
-
+    await AnalyticsService.logLogout();
     if (!mounted) return;
 
     widget.onLogout?.call();
