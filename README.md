@@ -111,7 +111,7 @@ breed_opened - пользователь открыл породу
 ![alt text](assets/image-1.png)
 ![alt text](assets/image-2.png)
 ![alt text](assets/image-3.png)
-![alt text](cicd.png)
-![alt text](analytics.png)
+![alt text](assets/cicd.png)
+![alt text](assets/analytics.png)
 
 Ссылка на APK: https://disk.360.yandex.ru/d/epkEyZfl8zsx9g
