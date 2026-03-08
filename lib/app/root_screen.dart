@@ -6,13 +6,7 @@ import 'package:kototinder/features/home/presentation/screens/main_navigation_sc
 import 'package:kototinder/features/onboarding/data/onboarding_local_data_source.dart';
 import 'package:kototinder/features/onboarding/presentation/screens/onboarding_screen.dart';
 
-enum AppLaunchState {
-  loading,
-  onboarding,
-  login,
-  register,
-  home,
-}
+enum AppLaunchState { loading, onboarding, login, register, home }
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -34,8 +28,7 @@ class _RootScreenState extends State<RootScreen> {
   }
 
   Future<void> _resolveStartScreen() async {
-    final onboardingCompleted =
-        await _onboardingLocalDataSource.isCompleted();
+    final onboardingCompleted = await _onboardingLocalDataSource.isCompleted();
 
     if (!onboardingCompleted) {
       setState(() {
@@ -80,16 +73,10 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     switch (_state) {
       case AppLaunchState.loading:
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
       case AppLaunchState.onboarding:
-        return OnboardingScreen(
-          onCompleted: _goToLogin,
-        );
+        return OnboardingScreen(onCompleted: _goToLogin);
 
       case AppLaunchState.login:
         return LoginScreen(
@@ -98,14 +85,10 @@ class _RootScreenState extends State<RootScreen> {
         );
 
       case AppLaunchState.register:
-        return RegisterScreen(
-          onRegisterSuccess: _goToHome,
-        );
+        return RegisterScreen(onRegisterSuccess: _goToHome);
 
       case AppLaunchState.home:
-        return MainNavigationScreen(
-          onLogout: _goToLogin,
-        );
+        return MainNavigationScreen(onLogout: _goToLogin);
     }
   }
 }

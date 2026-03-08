@@ -5,10 +5,7 @@ import 'package:kototinder/features/onboarding/domain/entities/onboarding_page_e
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onCompleted;
 
-  const OnboardingScreen({
-    super.key,
-    required this.onCompleted,
-  });
+  const OnboardingScreen({super.key, required this.onCompleted});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -24,17 +21,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingPageEntity(
       emoji: '🐱',
       title: 'Свайпайте котиков',
-      description: 'Смотрите карточки с котиками, изучайие их, находите любимых.',
+      description:
+          'Смотрите карточки с котиками, изучайие их, находите любимых.',
     ),
     OnboardingPageEntity(
       emoji: '❤️',
       title: 'Лайкайте понравившихся',
-      description: 'Ставьте лайки котикам, которые понравились, и продолжайте поиск.',
+      description:
+          'Ставьте лайки котикам, которые понравились, и продолжайте поиск.',
     ),
     OnboardingPageEntity(
       emoji: '📚',
       title: 'Изучайте породы',
-      description: 'Открывайте список пород и узнавайте больше об их характере и особенностях.',
+      description:
+          'Открывайте список пород и узнавайте больше об их характере и особенностях.',
     ),
   ];
 
@@ -71,12 +71,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Добро пожаловать'),
-        actions: _isLastPage ? null : [
-          TextButton(
-            onPressed: _finishOnboarding,
-            child: const Text('Пропустить'),
-          ),
-        ],
+        actions: _isLastPage
+            ? null
+            : [
+                TextButton(
+                  onPressed: _finishOnboarding,
+                  child: const Text('Пропустить'),
+                ),
+              ],
       ),
       body: SafeArea(
         child: Padding(
@@ -190,22 +192,12 @@ class _OnboardingPageState extends State<_OnboardingPage>
     _scaleAnimation = Tween<double>(
       begin: 0.85,
       end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutBack,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _offsetAnimation = Tween<double>(
       begin: 18,
       end: 0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     if (widget.isActive) {
       _controller.forward();
@@ -235,10 +227,7 @@ class _OnboardingPageState extends State<_OnboardingPage>
         builder: (context, child) {
           return Transform.translate(
             offset: Offset(0, _offsetAnimation.value),
-            child: Transform.scale(
-              scale: _scaleAnimation.value,
-              child: child,
-            ),
+            child: Transform.scale(scale: _scaleAnimation.value, child: child),
           );
         },
         child: Container(
@@ -249,10 +238,7 @@ class _OnboardingPageState extends State<_OnboardingPage>
             borderRadius: BorderRadius.circular(32),
           ),
           child: Center(
-            child: Text(
-              widget.emoji,
-              style: const TextStyle(fontSize: 110),
-            ),
+            child: Text(widget.emoji, style: const TextStyle(fontSize: 110)),
           ),
         ),
       ),
@@ -264,32 +250,28 @@ class _PageIndicator extends StatelessWidget {
   final int currentPage;
   final int pageCount;
 
-  const _PageIndicator({
-    required this.currentPage,
-    required this.pageCount,
-  });
+  const _PageIndicator({required this.currentPage, required this.pageCount});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        pageCount,
-        (index) {
-          final isActive = index == currentPage;
+      children: List.generate(pageCount, (index) {
+        final isActive = index == currentPage;
 
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            width: isActive ? 24 : 10,
-            height: 10,
-            decoration: BoxDecoration(
-              color: isActive ? Colors.orange : Colors.orange.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(999),
-            ),
-          );
-        },
-      ),
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: isActive ? 24 : 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: isActive
+                ? Colors.orange
+                : Colors.orange.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(999),
+          ),
+        );
+      }),
     );
   }
 }

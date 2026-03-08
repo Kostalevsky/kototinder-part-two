@@ -23,9 +23,7 @@ class BreedsRemoteDataSource {
     }
 
     return data
-        .map(
-          (item) => BreedInfoModel.fromJson(item as Map<String, dynamic>),
-        )
+        .map((item) => BreedInfoModel.fromJson(item as Map<String, dynamic>))
         .toList();
   }
 }

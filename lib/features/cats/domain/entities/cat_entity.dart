@@ -4,8 +4,5 @@ class CatEntity {
   final String imageUrl;
   final BreedEntity breed;
 
-  const CatEntity({
-    required this.imageUrl,
-    required this.breed,
-  });
+  const CatEntity({required this.imageUrl, required this.breed});
 }

@@ -74,10 +74,7 @@ class _BreedsScreenState extends State<BreedsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-              ),
+              Text(_errorMessage!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadBreeds,
@@ -123,17 +120,12 @@ class _BreedsScreenState extends State<BreedsScreen> {
 class BreedDetailScreen extends StatelessWidget {
   final BreedInfoEntity breed;
 
-  const BreedDetailScreen({
-    super.key,
-    required this.breed,
-  });
+  const BreedDetailScreen({super.key, required this.breed});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(breed.name),
-      ),
+      appBar: AppBar(title: Text(breed.name)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -142,10 +134,7 @@ class BreedDetailScreen extends StatelessWidget {
             if (breed.description != null && breed.description!.isNotEmpty) ...[
               const Text(
                 'Описание',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(breed.description!),
@@ -153,10 +142,7 @@ class BreedDetailScreen extends StatelessWidget {
             ],
             const Text(
               'Характеристики',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             if (breed.origin != null && breed.origin!.isNotEmpty)

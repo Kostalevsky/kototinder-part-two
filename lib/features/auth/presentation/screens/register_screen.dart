@@ -4,10 +4,7 @@ import 'package:kototinder/features/auth/data/auth_local_data_source.dart';
 class RegisterScreen extends StatefulWidget {
   final VoidCallback onRegisterSuccess;
 
-  const RegisterScreen({
-    super.key,
-    required this.onRegisterSuccess,
-  });
+  const RegisterScreen({super.key, required this.onRegisterSuccess});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -65,9 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Регистрация'),
-      ),
+      appBar: AppBar(title: const Text('Регистрация')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -91,10 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 16),
             if (errorText != null)
-              Text(
-                errorText!,
-                style: const TextStyle(color: Colors.red),
-              ),
+              Text(errorText!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: isLoading ? null : _register,

@@ -147,10 +147,7 @@ class _CatScreenState extends State<CatScreen> {
                     borderRadius: BorderRadius.circular(12),
                     child: AspectRatio(
                       aspectRatio: 4 / 3,
-                      child: Image.network(
-                        cat.imageUrl,
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.network(cat.imageUrl, fit: BoxFit.cover),
                     ),
                   ),
                 ),

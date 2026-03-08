@@ -14,29 +14,20 @@ class CatDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(breed.name),
-      ),
+      appBar: AppBar(title: Text(breed.name)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Image.network(
-                imageUrl,
-                height: 300,
-                fit: BoxFit.cover,
-              ),
+              child: Image.network(imageUrl, height: 300, fit: BoxFit.cover),
             ),
             const SizedBox(height: 16),
             if (breed.description != null && breed.description!.isNotEmpty) ...[
               const Text(
                 'Описание',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(breed.description!),
@@ -44,10 +35,7 @@ class CatDetailScreen extends StatelessWidget {
             ],
             const Text(
               'Характеристики',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             if (breed.origin != null && breed.origin!.isNotEmpty)

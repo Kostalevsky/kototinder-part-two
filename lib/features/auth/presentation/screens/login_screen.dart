@@ -66,9 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Вход'),
-      ),
+      appBar: AppBar(title: const Text('Вход')),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -92,10 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 16),
             if (errorText != null)
-              Text(
-                errorText!,
-                style: const TextStyle(color: Colors.red),
-              ),
+              Text(errorText!, style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: isLoading ? null : _login,

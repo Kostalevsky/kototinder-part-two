@@ -2,7 +2,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthLocalDataSource {
-
   final _secureStorage = const FlutterSecureStorage();
 
   static const _usernameKey = 'username';
@@ -15,20 +14,15 @@ class AuthLocalDataSource {
   }
 
   Future<void> register(String username, String password) async {
-
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(_usernameKey, username);
     await prefs.setBool(_loggedInKey, true);
 
-    await _secureStorage.write(
-      key: _passwordKey,
-      value: password,
-    );
+    await _secureStorage.write(key: _passwordKey, value: password);
   }
 
   Future<bool> login(String username, String password) async {
-
     final prefs = await SharedPreferences.getInstance();
 
     final storedUsername = prefs.getString(_usernameKey);
